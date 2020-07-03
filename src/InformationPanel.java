@@ -3,6 +3,7 @@ import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.util.List;
 
 public class InformationPanel extends JPanel {
@@ -20,12 +21,20 @@ public class InformationPanel extends JPanel {
         velocityRotationalMaxClosestToGroundTextField, intensityTextField;
     private StandardButton loadButton, clearButton;
     private JPanel buttonPanel;
+    private InfoNavigationPanel navigationPanel;
     Border border = BorderFactory.createLoweredBevelBorder();
+    XMLFetcher xmlFetcher;
+    OpenDataReader odr;
+    Mesocyclone[] mesocyclones;
 
-    List<Mesocyclone> mesocycloneList;
+    public InformationPanel() {
+        if (xmlFetcher == null) {
+            xmlFetcher = new XMLFetcher(new OpenDataConfiguration());
+        }
+        if (odr == null) {
+            odr = new OpenDataReader(new File(xmlFetcher.getLocalDownloadPath() + "\\" + xmlFetcher.getOpenDataName()));
+        }
 
-    public InformationPanel(List<Mesocyclone> mesocycloneList) {
-        this.mesocycloneList = mesocycloneList;
         GridBagLayout gridBagLayout = new GridBagLayout();
 
         setLayout(gridBagLayout);
@@ -37,6 +46,8 @@ public class InformationPanel extends JPanel {
 
         buttonPanel = new JPanel();
         buttonPanel.setBackground(Color.GRAY);
+
+        navigationPanel = new InfoNavigationPanel();
 
         initLabels();
         initTextFields();
@@ -52,6 +63,8 @@ public class InformationPanel extends JPanel {
         GridBagConstraints gbc = new GridBagConstraints();
 
         // ROW 0
+        gbc.anchor = GridBagConstraints.NORTH;
+        gbc.weighty = 1;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.gridx = 0;
         gbc.gridy = 0;
@@ -323,11 +336,17 @@ public class InformationPanel extends JPanel {
         gbc.gridy = 29;
         add(intensityTextField, gbc);
 
+        // NAVIGATOR ROW
+        gbc.gridwidth = 2;
+        gbc.gridx = 0;
+        gbc.gridy = 30;
+        add(navigationPanel, gbc);
+
         // BUTTONROW
         gbc.gridwidth = 2;
 
         gbc.gridx = 0;
-        gbc.gridy = 30;
+        gbc.gridy = 31;
         add(buttonPanel, gbc);
 
 
@@ -400,21 +419,30 @@ public class InformationPanel extends JPanel {
     }
 
     private void initButtons() {
-        loadButton = new StandardButton("LOAD");
+        loadButton = new StandardButton("LOAD XML");
         clearButton = new StandardButton("CLEAR");
     }
 
     private void fillData() {
-        this.idTextField.setText(String.valueOf(mesocycloneList.get(0).getId()));
-        this.timeTextField.setText(String.valueOf(mesocycloneList.get(0).getTime()));
-        this.latitudeTextField.setText(String.valueOf(mesocycloneList.get(0).getLatitude()));
-        this.longitudeTextField.setText(String.valueOf(mesocycloneList.get(0).getLongitude()));
+        this.idTextField.setText(String.valueOf(mesocyclones[0].getId()));
+        this.timeTextField.setText(String.valueOf(mesocyclones[0].getTime()));
+        this.latitudeTextField.setText(String.valueOf(mesocyclones[0].getLatitude()));
+        this.longitudeTextField.setText(String.valueOf(mesocyclones[0].getLongitude()));
+    }
+
+    private void downloadData() {
+        odr.parseRadarStations();
+        odr.parseMesocycloneEvents();
+
+        mesocyclones = new Mesocyclone[odr.getMesocycloneList().size()];
+        mesocyclones = odr.getMesocycloneList().toArray(mesocyclones);
     }
 
     public class ButtonListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent actionEvent) {
             if (actionEvent.getSource() == loadButton) {
+                downloadData();
                 fillData();
             }
         }

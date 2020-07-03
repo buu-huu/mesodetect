@@ -4,11 +4,11 @@ import java.awt.*;
 public class DescriptionLabel extends JLabel {
     private Font font = new Font("Courier", Font.PLAIN, 12);
     private Color color = Color.BLACK;
-    private boolean placeColon = true;
+    private final boolean PLACE_COLON = true;
 
     public DescriptionLabel(String text) {
         super(text);
-        if (placeColon) {
+        if (PLACE_COLON) {
             String description = text;
             description += ":";
             setText(description);

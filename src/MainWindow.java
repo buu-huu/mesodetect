@@ -5,10 +5,8 @@ import java.util.List;
 public class MainWindow extends JFrame {
     JPanel mainPanel;
     InformationPanel informationPanel;
-    List<Mesocyclone> mesocycloneList;
 
-    public MainWindow(List<Mesocyclone> mesocycloneList) {
-        this.mesocycloneList = mesocycloneList;
+    public MainWindow() {
         initUI();
     }
 
@@ -16,7 +14,7 @@ public class MainWindow extends JFrame {
         mainPanel = new JPanel();
         mainPanel.setLayout(new BorderLayout());
 
-        informationPanel = new InformationPanel(mesocycloneList);
+        informationPanel = new InformationPanel();
 
         mainPanel.add(informationPanel, BorderLayout.EAST);
 
