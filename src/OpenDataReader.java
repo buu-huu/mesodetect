@@ -43,9 +43,9 @@ public class OpenDataReader {
             for (String station : stationStringList) {
                 // Check if station id is uppercase or lowercase
                 if (!station.equals(station.toLowerCase())) {
-                    radarStationList.add(new RadarStation(station, true));
+                    radarStationList.add(new RadarStation(station.toUpperCase(), true));
                 } else {
-                    radarStationList.add(new RadarStation(station, false));
+                    radarStationList.add(new RadarStation(station.toUpperCase(), false));
                 }
             }
             System.out.println("Parsed radar stations!");
@@ -71,6 +71,8 @@ public class OpenDataReader {
             document.getDocumentElement().normalize();
 
             NodeList nListEvents = document.getElementsByTagName("event");
+
+            mesocycloneList.clear(); // Clear the list
 
             // Iterate through each event (mesocyclone)
             for (int event = 0; event < nListEvents.getLength(); event++) {

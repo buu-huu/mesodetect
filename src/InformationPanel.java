@@ -4,6 +4,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 public class InformationPanel extends JPanel {
@@ -19,13 +20,16 @@ public class InformationPanel extends JPanel {
         baseTextField, echotopTextField, vilTextField, shearVectorsTextField, shearFeaturesTextField, elevationsTextField,
         meanDBZTextField, maxDBZTextField, velocityMaxTextField, velocityRotationalMaxTextField, velocityRotationalMeanTextField,
         velocityRotationalMaxClosestToGroundTextField, intensityTextField;
-    private StandardButton loadButton, clearButton;
+    private StandardButton loadButton, exitButton;
     private JPanel buttonPanel;
+    private RadarStationPanel radarStationPanel;
     private InfoNavigationPanel navigationPanel;
-    Border border = BorderFactory.createLoweredBevelBorder();
-    XMLFetcher xmlFetcher;
-    OpenDataReader odr;
-    Mesocyclone[] mesocyclones;
+    private Border border = BorderFactory.createLoweredBevelBorder();
+    private XMLFetcher xmlFetcher;
+    private OpenDataReader odr;
+    private Mesocyclone[] mesocyclones;
+    private List<RadarStation> radarStationList;
+    private int mesoCurrent = 0;
 
     public InformationPanel() {
         if (xmlFetcher == null) {
@@ -48,6 +52,9 @@ public class InformationPanel extends JPanel {
         buttonPanel.setBackground(Color.GRAY);
 
         navigationPanel = new InfoNavigationPanel();
+        navigationPanel.setInformationPanel(this);
+
+        radarStationPanel = new RadarStationPanel(radarStationList);
 
         initLabels();
         initTextFields();
@@ -58,7 +65,7 @@ public class InformationPanel extends JPanel {
         loadButton.addActionListener(buttonListener);
 
         buttonPanel.add(loadButton);
-        buttonPanel.add(clearButton);
+        buttonPanel.add(exitButton);
 
         GridBagConstraints gbc = new GridBagConstraints();
 
@@ -71,7 +78,7 @@ public class InformationPanel extends JPanel {
         gbc.gridwidth = 2;
         add(header, gbc);
 
-        add(Box.createVerticalStrut(50));
+        add(Box.createVerticalStrut(20));
 
         gbc.gridwidth = 1;
 
@@ -349,6 +356,10 @@ public class InformationPanel extends JPanel {
         gbc.gridy = 31;
         add(buttonPanel, gbc);
 
+        // RADAR STATION ROW
+        gbc.gridx = 0;
+        gbc.gridy = 32;
+        add(radarStationPanel, gbc);
 
         setPreferredSize(new Dimension(300, 0));
     }
@@ -383,7 +394,9 @@ public class InformationPanel extends JPanel {
         velocityRotationalMaxLabel = new DescriptionLabel("VELOC ROT MAX");
         velocityRotationalMeanLabel = new DescriptionLabel("VELOC ROT MEAN");
         velocityRotationalMaxClosestToGroundLabel = new DescriptionLabel("VELOC ROT MAX CL GR");
+
         intensityLabel = new DescriptionLabel("INTENSITY");
+        intensityLabel.setFont(new Font("Courier", Font.BOLD, 12));
     }
 
     private void initTextFields() {
@@ -415,35 +428,84 @@ public class InformationPanel extends JPanel {
         velocityRotationalMaxTextField = new DescriptionTextField();
         velocityRotationalMeanTextField = new DescriptionTextField();
         velocityRotationalMaxClosestToGroundTextField = new DescriptionTextField();
+
         intensityTextField = new DescriptionTextField();
+        intensityTextField.setBackground(Color.YELLOW);
+        intensityTextField.setDisabledTextColor(Color.BLACK);
     }
 
     private void initButtons() {
         loadButton = new StandardButton("LOAD XML");
-        clearButton = new StandardButton("CLEAR");
+        exitButton = new StandardButton("EXIT");
     }
 
-    private void fillData() {
-        this.idTextField.setText(String.valueOf(mesocyclones[0].getId()));
-        this.timeTextField.setText(String.valueOf(mesocyclones[0].getTime()));
-        this.latitudeTextField.setText(String.valueOf(mesocyclones[0].getLatitude()));
-        this.longitudeTextField.setText(String.valueOf(mesocyclones[0].getLongitude()));
+    private void fillDataOfMeso(int index) {
+        if (mesocyclones != null && mesocyclones.length != 0) {
+            int i = index - 1;
+
+            this.idTextField.setText(String.valueOf(mesocyclones[i].getId()));
+            this.timeTextField.setText(String.valueOf(mesocyclones[i].getTime()));
+            this.latitudeTextField.setText(String.valueOf(mesocyclones[i].getLatitude()));
+            this.longitudeTextField.setText(String.valueOf(mesocyclones[i].getLongitude()));
+        }
+        else {
+            System.out.println("No mesocyclones found!");
+        }
     }
 
     private void downloadData() {
+        try {
+            //xmlFetcher.downloadOpenData();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         odr.parseRadarStations();
         odr.parseMesocycloneEvents();
 
+        // Getting radarstations from parser
+        radarStationList = odr.getRadarStationList();
+
+        // Getting mesocyclones from parser
         mesocyclones = new Mesocyclone[odr.getMesocycloneList().size()];
         mesocyclones = odr.getMesocycloneList().toArray(mesocyclones);
+
+        navigationPanel.initMesoCount(mesocyclones.length);
+        navigationPanel.updateLabel();
+        mesoCurrent = 1;
     }
+
+    public void mesoUp() {
+        if (mesoCurrent == mesocyclones.length) {
+            mesoCurrent = 1;
+        }
+        else {
+            mesoCurrent++;
+        }
+
+        fillDataOfMeso(mesoCurrent);
+    }
+
+    public void mesoDown() {
+        if (mesoCurrent == 1) {
+            mesoCurrent = mesocyclones.length;
+        }
+        else {
+            mesoCurrent--;
+        }
+
+        fillDataOfMeso(mesoCurrent);
+    }
+
 
     public class ButtonListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent actionEvent) {
             if (actionEvent.getSource() == loadButton) {
                 downloadData();
-                fillData();
+                fillDataOfMeso(mesoCurrent);
+                radarStationPanel.setRadarStationList(radarStationList);
+                radarStationPanel.setColors();
             }
         }
     }

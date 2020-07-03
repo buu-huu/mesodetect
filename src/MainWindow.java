@@ -1,5 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.List;
 
 public class MainWindow extends JFrame {
@@ -20,8 +22,36 @@ public class MainWindow extends JFrame {
 
         add(mainPanel);
 
-        setSize(1100, 980);
+        FrameDragListener frameDragListener = new FrameDragListener(this);
+        addMouseListener(frameDragListener);
+        addMouseMotionListener(frameDragListener);
+
         setTitle("Mesodetect");
+        setSize(1100, 980);
+        setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setUndecorated(true);
+    }
+
+    public static class FrameDragListener extends MouseAdapter {
+        private final JFrame frame;
+        private Point mouseDownCompCoords = null;
+
+        public FrameDragListener(JFrame frame) {
+            this.frame = frame;
+        }
+
+        public void mouseReleased(MouseEvent e) {
+            mouseDownCompCoords = null;
+        }
+
+        public void mousePressed(MouseEvent e) {
+            mouseDownCompCoords = e.getPoint();
+        }
+
+        public void mouseDragged(MouseEvent e) {
+            Point currCoords = e.getLocationOnScreen();
+            frame.setLocation(currCoords.x - mouseDownCompCoords.x, currCoords.y - mouseDownCompCoords.y);
+        }
     }
 }
