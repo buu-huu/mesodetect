@@ -435,7 +435,7 @@ public class InformationPanel extends JPanel {
     }
 
     private void initButtons() {
-        loadButton = new StandardButton("LOAD XML");
+        loadButton = new StandardButton("LOAD DATA");
         exitButton = new StandardButton("EXIT");
     }
 
@@ -447,6 +447,30 @@ public class InformationPanel extends JPanel {
             this.timeTextField.setText(String.valueOf(mesocyclones[i].getTime()));
             this.latitudeTextField.setText(String.valueOf(mesocyclones[i].getLatitude()));
             this.longitudeTextField.setText(String.valueOf(mesocyclones[i].getLongitude()));
+            this.polarMotionTextField.setText(String.valueOf(mesocyclones[i].getPolarMotion()));
+            this.majorAxisTextField.setText(String.valueOf(mesocyclones[i].getMajorAxis()));
+            this.minorAxisTextField.setText(String.valueOf(mesocyclones[i].getMinorAxis()));
+            this.orientationTextField.setText(String.valueOf(mesocyclones[i].getOrientation()));
+            this.shearMeanTextField.setText(String.valueOf(mesocyclones[i].getShearMean()));
+            this.shearMaxTextField.setText(String.valueOf(mesocyclones[i].getShearMax()));
+            this.momentumMeanTextField.setText(String.valueOf(mesocyclones[i].getMomentumMean()));
+            this.momentumMaxTextField.setText(String.valueOf(mesocyclones[i].getMomentumMax()));
+            this.diameterTextField.setText(String.valueOf(mesocyclones[i].getDiameter()));
+            this.diameterEquivalentTextField.setText(String.valueOf(mesocyclones[i].getDiameterEquivalent()));
+            this.topTextField.setText(String.valueOf(mesocyclones[i].getTop()));
+            this.baseTextField.setText(String.valueOf(mesocyclones[i].getBase()));
+            this.echotopTextField.setText(String.valueOf(mesocyclones[i].getEchotop()));
+            this.vilTextField.setText(String.valueOf(mesocyclones[i].getVil()));
+            this.shearVectorsTextField.setText(String.valueOf(mesocyclones[i].getShearVectors()));
+            this.shearFeaturesTextField.setText(String.valueOf(mesocyclones[i].getShearFeatures()));
+            this.elevationsTextField.setText(String.valueOf(mesocyclones[i].getElevations()));
+            this.meanDBZTextField.setText(String.valueOf(mesocyclones[i].getMeanDBZ()));
+            this.maxDBZTextField.setText(String.valueOf(mesocyclones[i].getMaxDBZ()));
+            this.velocityMaxTextField.setText(String.valueOf(mesocyclones[i].getVelocityMax()));
+            this.velocityRotationalMaxTextField.setText(String.valueOf(mesocyclones[i].getVelocityRotationalMax()));
+            this.velocityRotationalMeanTextField.setText(String.valueOf(mesocyclones[i].getVelocityRotationalMean()));
+            this.velocityRotationalMaxClosestToGroundTextField.setText(String.valueOf(mesocyclones[i].getVelocityRotationalMaxClosestToGround()));
+            this.intensityTextField.setText(String.valueOf(mesocyclones[i].getIntensity()));
         }
         else {
             System.out.println("No mesocyclones found!");
@@ -497,15 +521,19 @@ public class InformationPanel extends JPanel {
         fillDataOfMeso(mesoCurrent);
     }
 
+    public void reload() {
+        downloadData();
+        fillDataOfMeso(mesoCurrent);
+        radarStationPanel.setRadarStationList(radarStationList);
+        radarStationPanel.setColors();
+    }
+
 
     public class ButtonListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent actionEvent) {
             if (actionEvent.getSource() == loadButton) {
-                downloadData();
-                fillDataOfMeso(mesoCurrent);
-                radarStationPanel.setRadarStationList(radarStationList);
-                radarStationPanel.setColors();
+                reload();
             }
         }
     }
