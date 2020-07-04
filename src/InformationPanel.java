@@ -3,7 +3,6 @@ import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
 import java.util.List;
 
 public class InformationPanel extends JPanel {
@@ -21,7 +20,7 @@ public class InformationPanel extends JPanel {
         velocityRotationalMaxClosestToGroundTextField, intensityTextField;
     private StandardButton loadButton, exitButton;
     private JPanel buttonPanel;
-    private MainWindow parentWindow;
+    private MainFrame parentWindow;
     private RadarStationPanel radarStationPanel;
     private InfoNavigationPanel navigationPanel;
     private Border border = BorderFactory.createLoweredBevelBorder();
@@ -32,7 +31,7 @@ public class InformationPanel extends JPanel {
     private List<RadarStation> radarStationList;
     private int mesoCurrent = 0;
 
-    public InformationPanel(MainWindow parentWindow, Mesocyclone[] mesocyclones, List<RadarStation> radarStationList) {
+    public InformationPanel(MainFrame parentWindow, Mesocyclone[] mesocyclones, List<RadarStation> radarStationList) {
         this.parentWindow = parentWindow;
         this.mesocyclones = mesocyclones;
         this.radarStationList = radarStationList;
@@ -525,6 +524,8 @@ public class InformationPanel extends JPanel {
                 reload();
             }
             if (actionEvent.getSource() == exitButton) {
+                parentWindow.descriptionFrame.setVisible(false);
+                parentWindow.descriptionFrame.dispose();
                 parentWindow.setVisible(false);
                 parentWindow.dispose();
             }
@@ -1011,11 +1012,11 @@ public class InformationPanel extends JPanel {
         this.buttonPanel = buttonPanel;
     }
 
-    public MainWindow getParentWindow() {
+    public MainFrame getParentWindow() {
         return parentWindow;
     }
 
-    public void setParentWindow(MainWindow parentWindow) {
+    public void setParentWindow(MainFrame parentWindow) {
         this.parentWindow = parentWindow;
     }
 

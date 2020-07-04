@@ -6,10 +6,11 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-public class MainWindow extends JFrame {
+public class MainFrame extends JFrame {
     MapPanel mapPanel;
     InformationPanel informationPanel;
     MenuBar menuBar;
+    DescriptionFrame descriptionFrame;
 
     XMLFetcher xmlFetcher;
     OpenDataReader odr;
@@ -20,7 +21,7 @@ public class MainWindow extends JFrame {
     final int WIDTH = 1100;
     final int HEIGHT = 980;
 
-    public MainWindow() {
+    public MainFrame() {
         if (xmlFetcher == null) {
             xmlFetcher = new XMLFetcher(new OpenDataConfiguration());
         }
@@ -31,13 +32,15 @@ public class MainWindow extends JFrame {
         downloadData();
         initUI();
 
+        descriptionFrame = new DescriptionFrame();
+        descriptionFrame.setVisible(true);
     }
 
     public void downloadData() {
         try {
             xmlFetcher.downloadOpenData();
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println("Can't download data from Open Data Server: " + e.toString());
         }
 
         odr.parseRadarStations();

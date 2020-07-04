@@ -9,7 +9,7 @@ import java.util.Iterator;
 import java.util.List;
 
 public class MapPanel extends JPanel {
-    private MainWindow parentFrame;
+    private MainFrame parentFrame;
     private BufferedImage backgroundMap;
     private Color bg = new Color(50, 50, 50);
     private Mesocyclone[] mesocyclones;
@@ -18,7 +18,7 @@ public class MapPanel extends JPanel {
     final static int PANEL_WIDTH = 800;
     final static int PANEL_HEIGHT = 955;
 
-    public MapPanel(MainWindow parentFrame) throws IOException {
+    public MapPanel(MainFrame parentFrame) throws IOException {
         this.parentFrame = parentFrame;
 
         setLayout(null);
