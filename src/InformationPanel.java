@@ -4,7 +4,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 
 public class InformationPanel extends JPanel {
@@ -26,30 +25,24 @@ public class InformationPanel extends JPanel {
     private RadarStationPanel radarStationPanel;
     private InfoNavigationPanel navigationPanel;
     private Border border = BorderFactory.createLoweredBevelBorder();
+
     private XMLFetcher xmlFetcher;
     private OpenDataReader odr;
     private Mesocyclone[] mesocyclones;
     private List<RadarStation> radarStationList;
     private int mesoCurrent = 0;
 
-    public InformationPanel(MainWindow parentWindow) {
-        if (xmlFetcher == null) {
-            xmlFetcher = new XMLFetcher(new OpenDataConfiguration());
-        }
-        if (odr == null) {
-            odr = new OpenDataReader(new File(xmlFetcher.getLocalDownloadPath() + "\\" + xmlFetcher.getOpenDataName()));
-        }
-
+    public InformationPanel(MainWindow parentWindow, Mesocyclone[] mesocyclones, List<RadarStation> radarStationList) {
         this.parentWindow = parentWindow;
+        this.mesocyclones = mesocyclones;
+        this.radarStationList = radarStationList;
+
         setSize(new Dimension(500, 0));
         GridBagLayout gridBagLayout = new GridBagLayout();
 
         setLayout(gridBagLayout);
         setBackground(Color.GRAY);
-
-        if (border!= null) {
-            setBorder(border);
-        }
+        setBorder(border);
 
         buttonPanel = new JPanel();
         buttonPanel.setBackground(Color.GRAY);
@@ -408,7 +401,9 @@ public class InformationPanel extends JPanel {
         idTextField = new DescriptionTextField();
         timeTextField = new DescriptionTextField();
         latitudeTextField = new DescriptionTextField();
+        latitudeTextField.setBackground(new Color(30, 30, 30));
         longitudeTextField = new DescriptionTextField();
+        longitudeTextField.setBackground(new Color(30, 30, 30));
         polarMotionTextField = new DescriptionTextField();
         majorAxisTextField = new DescriptionTextField();
         minorAxisTextField = new DescriptionTextField();
@@ -483,21 +478,9 @@ public class InformationPanel extends JPanel {
     }
 
     private void downloadData() {
-        try {
-            xmlFetcher.downloadOpenData();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        odr.parseRadarStations();
-        odr.parseMesocycloneEvents();
-
-        // Getting radarstations from parser
-        radarStationList = odr.getRadarStationList();
-
-        // Getting mesocyclones from parser
-        mesocyclones = new Mesocyclone[odr.getMesocycloneList().size()];
-        mesocyclones = odr.getMesocycloneList().toArray(mesocyclones);
+        parentWindow.downloadData();
+        this.mesocyclones = parentWindow.getMesocyclones();
+        this.radarStationList = parentWindow.getRadarStationList();
 
         navigationPanel.initMesoCount(mesocyclones.length);
         navigationPanel.updateLabel();
@@ -531,6 +514,7 @@ public class InformationPanel extends JPanel {
         fillDataOfMeso(mesoCurrent);
         radarStationPanel.setRadarStationList(radarStationList);
         radarStationPanel.setColors();
+        parentWindow.mapPanel.loadMesocyclonesToMap();
     }
 
 
@@ -545,5 +529,559 @@ public class InformationPanel extends JPanel {
                 parentWindow.dispose();
             }
         }
+    }
+
+    public HeaderLabel getHeader() {
+        return header;
+    }
+
+    public void setHeader(HeaderLabel header) {
+        this.header = header;
+    }
+
+    public DescriptionLabel getIdLabel() {
+        return idLabel;
+    }
+
+    public void setIdLabel(DescriptionLabel idLabel) {
+        this.idLabel = idLabel;
+    }
+
+    public DescriptionLabel getTimeLabel() {
+        return timeLabel;
+    }
+
+    public void setTimeLabel(DescriptionLabel timeLabel) {
+        this.timeLabel = timeLabel;
+    }
+
+    public DescriptionLabel getLatitudeLabel() {
+        return latitudeLabel;
+    }
+
+    public void setLatitudeLabel(DescriptionLabel latitudeLabel) {
+        this.latitudeLabel = latitudeLabel;
+    }
+
+    public DescriptionLabel getLongituteLabel() {
+        return longituteLabel;
+    }
+
+    public void setLongituteLabel(DescriptionLabel longituteLabel) {
+        this.longituteLabel = longituteLabel;
+    }
+
+    public DescriptionLabel getPolarMotionLabel() {
+        return polarMotionLabel;
+    }
+
+    public void setPolarMotionLabel(DescriptionLabel polarMotionLabel) {
+        this.polarMotionLabel = polarMotionLabel;
+    }
+
+    public DescriptionLabel getMajorAxisLabel() {
+        return majorAxisLabel;
+    }
+
+    public void setMajorAxisLabel(DescriptionLabel majorAxisLabel) {
+        this.majorAxisLabel = majorAxisLabel;
+    }
+
+    public DescriptionLabel getMinorAxisLabel() {
+        return minorAxisLabel;
+    }
+
+    public void setMinorAxisLabel(DescriptionLabel minorAxisLabel) {
+        this.minorAxisLabel = minorAxisLabel;
+    }
+
+    public DescriptionLabel getOrientationLabel() {
+        return orientationLabel;
+    }
+
+    public void setOrientationLabel(DescriptionLabel orientationLabel) {
+        this.orientationLabel = orientationLabel;
+    }
+
+    public DescriptionLabel getShearMeanLabel() {
+        return shearMeanLabel;
+    }
+
+    public void setShearMeanLabel(DescriptionLabel shearMeanLabel) {
+        this.shearMeanLabel = shearMeanLabel;
+    }
+
+    public DescriptionLabel getShearMaxLabel() {
+        return shearMaxLabel;
+    }
+
+    public void setShearMaxLabel(DescriptionLabel shearMaxLabel) {
+        this.shearMaxLabel = shearMaxLabel;
+    }
+
+    public DescriptionLabel getMomentumMeanLabel() {
+        return momentumMeanLabel;
+    }
+
+    public void setMomentumMeanLabel(DescriptionLabel momentumMeanLabel) {
+        this.momentumMeanLabel = momentumMeanLabel;
+    }
+
+    public DescriptionLabel getMomentumMaxLabel() {
+        return momentumMaxLabel;
+    }
+
+    public void setMomentumMaxLabel(DescriptionLabel momentumMaxLabel) {
+        this.momentumMaxLabel = momentumMaxLabel;
+    }
+
+    public DescriptionLabel getDiameterLabel() {
+        return diameterLabel;
+    }
+
+    public void setDiameterLabel(DescriptionLabel diameterLabel) {
+        this.diameterLabel = diameterLabel;
+    }
+
+    public DescriptionLabel getDiameterEquivalentLabel() {
+        return diameterEquivalentLabel;
+    }
+
+    public void setDiameterEquivalentLabel(DescriptionLabel diameterEquivalentLabel) {
+        this.diameterEquivalentLabel = diameterEquivalentLabel;
+    }
+
+    public DescriptionLabel getTopLabel() {
+        return topLabel;
+    }
+
+    public void setTopLabel(DescriptionLabel topLabel) {
+        this.topLabel = topLabel;
+    }
+
+    public DescriptionLabel getBaseLabel() {
+        return baseLabel;
+    }
+
+    public void setBaseLabel(DescriptionLabel baseLabel) {
+        this.baseLabel = baseLabel;
+    }
+
+    public DescriptionLabel getEchotopLabel() {
+        return echotopLabel;
+    }
+
+    public void setEchotopLabel(DescriptionLabel echotopLabel) {
+        this.echotopLabel = echotopLabel;
+    }
+
+    public DescriptionLabel getVilLabel() {
+        return vilLabel;
+    }
+
+    public void setVilLabel(DescriptionLabel vilLabel) {
+        this.vilLabel = vilLabel;
+    }
+
+    public DescriptionLabel getShearVectorsLabel() {
+        return shearVectorsLabel;
+    }
+
+    public void setShearVectorsLabel(DescriptionLabel shearVectorsLabel) {
+        this.shearVectorsLabel = shearVectorsLabel;
+    }
+
+    public DescriptionLabel getShearFeaturesLabel() {
+        return shearFeaturesLabel;
+    }
+
+    public void setShearFeaturesLabel(DescriptionLabel shearFeaturesLabel) {
+        this.shearFeaturesLabel = shearFeaturesLabel;
+    }
+
+    public DescriptionLabel getElevationsLabel() {
+        return elevationsLabel;
+    }
+
+    public void setElevationsLabel(DescriptionLabel elevationsLabel) {
+        this.elevationsLabel = elevationsLabel;
+    }
+
+    public DescriptionLabel getMeanDBZLabel() {
+        return meanDBZLabel;
+    }
+
+    public void setMeanDBZLabel(DescriptionLabel meanDBZLabel) {
+        this.meanDBZLabel = meanDBZLabel;
+    }
+
+    public DescriptionLabel getMaxDBZLabel() {
+        return maxDBZLabel;
+    }
+
+    public void setMaxDBZLabel(DescriptionLabel maxDBZLabel) {
+        this.maxDBZLabel = maxDBZLabel;
+    }
+
+    public DescriptionLabel getVelocityMaxLabel() {
+        return velocityMaxLabel;
+    }
+
+    public void setVelocityMaxLabel(DescriptionLabel velocityMaxLabel) {
+        this.velocityMaxLabel = velocityMaxLabel;
+    }
+
+    public DescriptionLabel getVelocityRotationalMaxLabel() {
+        return velocityRotationalMaxLabel;
+    }
+
+    public void setVelocityRotationalMaxLabel(DescriptionLabel velocityRotationalMaxLabel) {
+        this.velocityRotationalMaxLabel = velocityRotationalMaxLabel;
+    }
+
+    public DescriptionLabel getVelocityRotationalMeanLabel() {
+        return velocityRotationalMeanLabel;
+    }
+
+    public void setVelocityRotationalMeanLabel(DescriptionLabel velocityRotationalMeanLabel) {
+        this.velocityRotationalMeanLabel = velocityRotationalMeanLabel;
+    }
+
+    public DescriptionLabel getVelocityRotationalMaxClosestToGroundLabel() {
+        return velocityRotationalMaxClosestToGroundLabel;
+    }
+
+    public void setVelocityRotationalMaxClosestToGroundLabel(DescriptionLabel velocityRotationalMaxClosestToGroundLabel) {
+        this.velocityRotationalMaxClosestToGroundLabel = velocityRotationalMaxClosestToGroundLabel;
+    }
+
+    public DescriptionLabel getIntensityLabel() {
+        return intensityLabel;
+    }
+
+    public void setIntensityLabel(DescriptionLabel intensityLabel) {
+        this.intensityLabel = intensityLabel;
+    }
+
+    public DescriptionTextField getIdTextField() {
+        return idTextField;
+    }
+
+    public void setIdTextField(DescriptionTextField idTextField) {
+        this.idTextField = idTextField;
+    }
+
+    public DescriptionTextField getTimeTextField() {
+        return timeTextField;
+    }
+
+    public void setTimeTextField(DescriptionTextField timeTextField) {
+        this.timeTextField = timeTextField;
+    }
+
+    public DescriptionTextField getLatitudeTextField() {
+        return latitudeTextField;
+    }
+
+    public void setLatitudeTextField(DescriptionTextField latitudeTextField) {
+        this.latitudeTextField = latitudeTextField;
+    }
+
+    public DescriptionTextField getLongitudeTextField() {
+        return longitudeTextField;
+    }
+
+    public void setLongitudeTextField(DescriptionTextField longitudeTextField) {
+        this.longitudeTextField = longitudeTextField;
+    }
+
+    public DescriptionTextField getPolarMotionTextField() {
+        return polarMotionTextField;
+    }
+
+    public void setPolarMotionTextField(DescriptionTextField polarMotionTextField) {
+        this.polarMotionTextField = polarMotionTextField;
+    }
+
+    public DescriptionTextField getMajorAxisTextField() {
+        return majorAxisTextField;
+    }
+
+    public void setMajorAxisTextField(DescriptionTextField majorAxisTextField) {
+        this.majorAxisTextField = majorAxisTextField;
+    }
+
+    public DescriptionTextField getMinorAxisTextField() {
+        return minorAxisTextField;
+    }
+
+    public void setMinorAxisTextField(DescriptionTextField minorAxisTextField) {
+        this.minorAxisTextField = minorAxisTextField;
+    }
+
+    public DescriptionTextField getOrientationTextField() {
+        return orientationTextField;
+    }
+
+    public void setOrientationTextField(DescriptionTextField orientationTextField) {
+        this.orientationTextField = orientationTextField;
+    }
+
+    public DescriptionTextField getShearMeanTextField() {
+        return shearMeanTextField;
+    }
+
+    public void setShearMeanTextField(DescriptionTextField shearMeanTextField) {
+        this.shearMeanTextField = shearMeanTextField;
+    }
+
+    public DescriptionTextField getShearMaxTextField() {
+        return shearMaxTextField;
+    }
+
+    public void setShearMaxTextField(DescriptionTextField shearMaxTextField) {
+        this.shearMaxTextField = shearMaxTextField;
+    }
+
+    public DescriptionTextField getMomentumMeanTextField() {
+        return momentumMeanTextField;
+    }
+
+    public void setMomentumMeanTextField(DescriptionTextField momentumMeanTextField) {
+        this.momentumMeanTextField = momentumMeanTextField;
+    }
+
+    public DescriptionTextField getMomentumMaxTextField() {
+        return momentumMaxTextField;
+    }
+
+    public void setMomentumMaxTextField(DescriptionTextField momentumMaxTextField) {
+        this.momentumMaxTextField = momentumMaxTextField;
+    }
+
+    public DescriptionTextField getDiameterTextField() {
+        return diameterTextField;
+    }
+
+    public void setDiameterTextField(DescriptionTextField diameterTextField) {
+        this.diameterTextField = diameterTextField;
+    }
+
+    public DescriptionTextField getDiameterEquivalentTextField() {
+        return diameterEquivalentTextField;
+    }
+
+    public void setDiameterEquivalentTextField(DescriptionTextField diameterEquivalentTextField) {
+        this.diameterEquivalentTextField = diameterEquivalentTextField;
+    }
+
+    public DescriptionTextField getTopTextField() {
+        return topTextField;
+    }
+
+    public void setTopTextField(DescriptionTextField topTextField) {
+        this.topTextField = topTextField;
+    }
+
+    public DescriptionTextField getBaseTextField() {
+        return baseTextField;
+    }
+
+    public void setBaseTextField(DescriptionTextField baseTextField) {
+        this.baseTextField = baseTextField;
+    }
+
+    public DescriptionTextField getEchotopTextField() {
+        return echotopTextField;
+    }
+
+    public void setEchotopTextField(DescriptionTextField echotopTextField) {
+        this.echotopTextField = echotopTextField;
+    }
+
+    public DescriptionTextField getVilTextField() {
+        return vilTextField;
+    }
+
+    public void setVilTextField(DescriptionTextField vilTextField) {
+        this.vilTextField = vilTextField;
+    }
+
+    public DescriptionTextField getShearVectorsTextField() {
+        return shearVectorsTextField;
+    }
+
+    public void setShearVectorsTextField(DescriptionTextField shearVectorsTextField) {
+        this.shearVectorsTextField = shearVectorsTextField;
+    }
+
+    public DescriptionTextField getShearFeaturesTextField() {
+        return shearFeaturesTextField;
+    }
+
+    public void setShearFeaturesTextField(DescriptionTextField shearFeaturesTextField) {
+        this.shearFeaturesTextField = shearFeaturesTextField;
+    }
+
+    public DescriptionTextField getElevationsTextField() {
+        return elevationsTextField;
+    }
+
+    public void setElevationsTextField(DescriptionTextField elevationsTextField) {
+        this.elevationsTextField = elevationsTextField;
+    }
+
+    public DescriptionTextField getMeanDBZTextField() {
+        return meanDBZTextField;
+    }
+
+    public void setMeanDBZTextField(DescriptionTextField meanDBZTextField) {
+        this.meanDBZTextField = meanDBZTextField;
+    }
+
+    public DescriptionTextField getMaxDBZTextField() {
+        return maxDBZTextField;
+    }
+
+    public void setMaxDBZTextField(DescriptionTextField maxDBZTextField) {
+        this.maxDBZTextField = maxDBZTextField;
+    }
+
+    public DescriptionTextField getVelocityMaxTextField() {
+        return velocityMaxTextField;
+    }
+
+    public void setVelocityMaxTextField(DescriptionTextField velocityMaxTextField) {
+        this.velocityMaxTextField = velocityMaxTextField;
+    }
+
+    public DescriptionTextField getVelocityRotationalMaxTextField() {
+        return velocityRotationalMaxTextField;
+    }
+
+    public void setVelocityRotationalMaxTextField(DescriptionTextField velocityRotationalMaxTextField) {
+        this.velocityRotationalMaxTextField = velocityRotationalMaxTextField;
+    }
+
+    public DescriptionTextField getVelocityRotationalMeanTextField() {
+        return velocityRotationalMeanTextField;
+    }
+
+    public void setVelocityRotationalMeanTextField(DescriptionTextField velocityRotationalMeanTextField) {
+        this.velocityRotationalMeanTextField = velocityRotationalMeanTextField;
+    }
+
+    public DescriptionTextField getVelocityRotationalMaxClosestToGroundTextField() {
+        return velocityRotationalMaxClosestToGroundTextField;
+    }
+
+    public void setVelocityRotationalMaxClosestToGroundTextField(DescriptionTextField velocityRotationalMaxClosestToGroundTextField) {
+        this.velocityRotationalMaxClosestToGroundTextField = velocityRotationalMaxClosestToGroundTextField;
+    }
+
+    public DescriptionTextField getIntensityTextField() {
+        return intensityTextField;
+    }
+
+    public void setIntensityTextField(DescriptionTextField intensityTextField) {
+        this.intensityTextField = intensityTextField;
+    }
+
+    public StandardButton getLoadButton() {
+        return loadButton;
+    }
+
+    public void setLoadButton(StandardButton loadButton) {
+        this.loadButton = loadButton;
+    }
+
+    public StandardButton getExitButton() {
+        return exitButton;
+    }
+
+    public void setExitButton(StandardButton exitButton) {
+        this.exitButton = exitButton;
+    }
+
+    public JPanel getButtonPanel() {
+        return buttonPanel;
+    }
+
+    public void setButtonPanel(JPanel buttonPanel) {
+        this.buttonPanel = buttonPanel;
+    }
+
+    public MainWindow getParentWindow() {
+        return parentWindow;
+    }
+
+    public void setParentWindow(MainWindow parentWindow) {
+        this.parentWindow = parentWindow;
+    }
+
+    public RadarStationPanel getRadarStationPanel() {
+        return radarStationPanel;
+    }
+
+    public void setRadarStationPanel(RadarStationPanel radarStationPanel) {
+        this.radarStationPanel = radarStationPanel;
+    }
+
+    public InfoNavigationPanel getNavigationPanel() {
+        return navigationPanel;
+    }
+
+    public void setNavigationPanel(InfoNavigationPanel navigationPanel) {
+        this.navigationPanel = navigationPanel;
+    }
+
+    @Override
+    public Border getBorder() {
+        return border;
+    }
+
+    @Override
+    public void setBorder(Border border) {
+        this.border = border;
+    }
+
+    public XMLFetcher getXmlFetcher() {
+        return xmlFetcher;
+    }
+
+    public void setXmlFetcher(XMLFetcher xmlFetcher) {
+        this.xmlFetcher = xmlFetcher;
+    }
+
+    public OpenDataReader getOdr() {
+        return odr;
+    }
+
+    public void setOdr(OpenDataReader odr) {
+        this.odr = odr;
+    }
+
+    public Mesocyclone[] getMesocyclones() {
+        return mesocyclones;
+    }
+
+    public void setMesocyclones(Mesocyclone[] mesocyclones) {
+        this.mesocyclones = mesocyclones;
+    }
+
+    public List<RadarStation> getRadarStationList() {
+        return radarStationList;
+    }
+
+    public void setRadarStationList(List<RadarStation> radarStationList) {
+        this.radarStationList = radarStationList;
+    }
+
+    public int getMesoCurrent() {
+        return mesoCurrent;
+    }
+
+    public void setMesoCurrent(int mesoCurrent) {
+        this.mesoCurrent = mesoCurrent;
     }
 }

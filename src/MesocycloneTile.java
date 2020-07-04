@@ -20,7 +20,6 @@ public class MesocycloneTile extends JPanel {
     static final double LATITUDE_DIFFERENCE = LATITUDE_TOP - LATITUDE_BOTTOM;
 
     public MesocycloneTile(int intensity, double longitude, double latitude) throws IOException {
-
         switch (intensity) {
             case 1:
                 image = ImageIO.read(new File(System.getProperty("user.dir") + File.separator + "\\res\\meso_icons\\meso_1.png"));
@@ -58,8 +57,6 @@ public class MesocycloneTile extends JPanel {
 
     public int convertLongToX(double longitude) {
         double ratio = (longitude - MesocycloneTile.LONGITUDE_LEFT) / MesocycloneTile.LONGITUDE_DIFFERENCE;
-        System.out.println("Longitude: " + longitude);
-        System.out.println("LON_LEFT: " + LONGITUDE_LEFT);
         return (int) Math.round(ratio * MapPanel.PANEL_WIDTH);
     }
 
