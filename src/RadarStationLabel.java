@@ -8,10 +8,12 @@ public class RadarStationLabel extends JLabel {
     Color bgNotUp = Color.RED;
     Color fg = Color.BLACK;
     Border border = BorderFactory.createBevelBorder(0);
+    Font font = new Font("Courier", Font.PLAIN, 12);
 
     public RadarStationLabel(String text) {
         super(text);
 
+        setFont(font);
         setHorizontalTextPosition(JLabel.CENTER);
         setBorder(border);
         setOpaque(true);

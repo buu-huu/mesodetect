@@ -6,8 +6,9 @@ public class DescriptionTextField extends JTextField {
     private Color bg = Color.DARK_GRAY;
 
     public DescriptionTextField() {
-        super("Test 1....");
+        super();
 
+        setPreferredSize(new Dimension(150, 20));
         setBorder(null);
         setEnabled(false);
         setBackground(bg);

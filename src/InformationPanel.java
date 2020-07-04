@@ -22,6 +22,7 @@ public class InformationPanel extends JPanel {
         velocityRotationalMaxClosestToGroundTextField, intensityTextField;
     private StandardButton loadButton, exitButton;
     private JPanel buttonPanel;
+    private MainWindow parentWindow;
     private RadarStationPanel radarStationPanel;
     private InfoNavigationPanel navigationPanel;
     private Border border = BorderFactory.createLoweredBevelBorder();
@@ -31,7 +32,7 @@ public class InformationPanel extends JPanel {
     private List<RadarStation> radarStationList;
     private int mesoCurrent = 0;
 
-    public InformationPanel() {
+    public InformationPanel(MainWindow parentWindow) {
         if (xmlFetcher == null) {
             xmlFetcher = new XMLFetcher(new OpenDataConfiguration());
         }
@@ -39,6 +40,8 @@ public class InformationPanel extends JPanel {
             odr = new OpenDataReader(new File(xmlFetcher.getLocalDownloadPath() + "\\" + xmlFetcher.getOpenDataName()));
         }
 
+        this.parentWindow = parentWindow;
+        setSize(new Dimension(500, 0));
         GridBagLayout gridBagLayout = new GridBagLayout();
 
         setLayout(gridBagLayout);
@@ -63,6 +66,7 @@ public class InformationPanel extends JPanel {
         ButtonListener buttonListener = new ButtonListener();
 
         loadButton.addActionListener(buttonListener);
+        exitButton.addActionListener(buttonListener);
 
         buttonPanel.add(loadButton);
         buttonPanel.add(exitButton);
@@ -72,6 +76,7 @@ public class InformationPanel extends JPanel {
         // ROW 0
         gbc.anchor = GridBagConstraints.NORTH;
         gbc.weighty = 1;
+        gbc.weightx = 1;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.gridx = 0;
         gbc.gridy = 0;
@@ -479,7 +484,7 @@ public class InformationPanel extends JPanel {
 
     private void downloadData() {
         try {
-            //xmlFetcher.downloadOpenData();
+            xmlFetcher.downloadOpenData();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -534,6 +539,10 @@ public class InformationPanel extends JPanel {
         public void actionPerformed(ActionEvent actionEvent) {
             if (actionEvent.getSource() == loadButton) {
                 reload();
+            }
+            if (actionEvent.getSource() == exitButton) {
+                parentWindow.setVisible(false);
+                parentWindow.dispose();
             }
         }
     }

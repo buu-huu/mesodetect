@@ -2,36 +2,48 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.IOException;
 import java.util.List;
 
 public class MainWindow extends JFrame {
-    JPanel mainPanel;
+    MapPanel mapPanel;
     InformationPanel informationPanel;
+    MenuBar menuBar;
+
+    final int WIDTH = 1100;
+    final int HEIGHT = 980;
 
     public MainWindow() {
         initUI();
     }
 
     private void initUI() {
-        mainPanel = new JPanel();
-        mainPanel.setLayout(new BorderLayout());
+        setLayout(new BorderLayout());
 
-        informationPanel = new InformationPanel();
+        try {
+            mapPanel = new MapPanel(this);
+        } catch (IOException e) {
+            System.out.println("Error loading background map: " + e.toString());
+        }
+        informationPanel = new InformationPanel(this);
+        menuBar = new MenuBar();
 
-        mainPanel.add(informationPanel, BorderLayout.EAST);
-
-        add(mainPanel);
+        add(mapPanel, BorderLayout.CENTER);
+        add(informationPanel, BorderLayout.EAST);
+        add(menuBar, BorderLayout.NORTH);
+        pack();
 
         FrameDragListener frameDragListener = new FrameDragListener(this);
         addMouseListener(frameDragListener);
         addMouseMotionListener(frameDragListener);
 
-        setTitle("Mesodetect");
-        setSize(1100, 980);
+        setTitle("Mesodetect  |  v1.0  |  \u00a9 Luca Schwarz");
+        setSize(WIDTH, HEIGHT);
         setLocationRelativeTo(null);
+        setResizable(false);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setUndecorated(true);
     }
+
 
     public static class FrameDragListener extends MouseAdapter {
         private final JFrame frame;
