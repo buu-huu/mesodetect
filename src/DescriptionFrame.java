@@ -7,6 +7,11 @@ import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
 
+/**
+ * Descriptionframe wich shows the legend of the map with different intensities / severities
+ * for mesocyclones and explains how a current and historic mesocyclone looks.
+ * @author Luca Schwarz
+ */
 public class DescriptionFrame extends JFrame {
     private JLabel descriptionLabel;
     private JPanel mainPanel;
@@ -19,9 +24,12 @@ public class DescriptionFrame extends JFrame {
         initUI();
     }
 
+    /**
+     * Initializes the UI
+     */
     private void initUI() {
         mainPanel = new JPanel();
-        mainPanel.setLayout(new BorderLayout());
+        mainPanel.setLayout(new BorderLayout()); // Because of "manual" titlebar (at North)
 
         try {
             descriptionFramePanel = new DescriptionFramePanel();
@@ -41,6 +49,7 @@ public class DescriptionFrame extends JFrame {
 
         add(mainPanel);
 
+        // Implement ability to drag Frame around by clicking anywhere
         DescriptionFrame.FrameDragListener frameDragListener = new DescriptionFrame.FrameDragListener(this);
         addMouseListener(frameDragListener);
         addMouseMotionListener(frameDragListener);
@@ -52,6 +61,10 @@ public class DescriptionFrame extends JFrame {
         setLocationRelativeTo(null);
     }
 
+    /**
+     * Listener for ability to drag frame around by clicking and holding
+     * anywhere in the frame.
+     */
     public static class FrameDragListener extends MouseAdapter {
         private final JFrame frame;
         private Point mouseDownCompCoords = null;
@@ -74,6 +87,9 @@ public class DescriptionFrame extends JFrame {
         }
     }
 
+    /**
+     * Holds all stuff excluding the title bar.
+     */
     public class DescriptionFramePanel extends JPanel {
         JLabel lblCurrent, lblHistoric, lblCurrentDesc, lblHistoricDesc;
         ColorLabel lbl1color, lbl2color, lbl3color, lbl4color, lbl5color;
@@ -131,6 +147,10 @@ public class DescriptionFrame extends JFrame {
             add(lbl5desc);
         }
 
+        /**
+         * Special label that looks like a colored square
+         * that represents one of the five intensity colors.
+         */
         public class ColorLabel extends JLabel {
             Color color;
             Border border = BorderFactory.createLineBorder(Color.BLACK);
@@ -142,6 +162,12 @@ public class DescriptionFrame extends JFrame {
             final Color col4 = new Color(228, 28,  32);
             final Color col5 = new Color(132, 71,  149);
 
+            /**
+             * Constructor
+             * @param intensity creates color according to intensity
+             * @param x x position of label
+             * @param y y position of label
+             */
             public ColorLabel(int intensity, int x, int y) {
                 switch (intensity) {
                     case 1:
@@ -172,12 +198,21 @@ public class DescriptionFrame extends JFrame {
             }
         }
 
+        /**
+         * Description label of {@link ColorLabel} to describe the intensity per color
+         */
         public class ColorDescriptionLabel extends JLabel {
             final int WIDTH = 80;
             final int HEIGHT = 25;
 
             Font font = new Font("Courier", Font.PLAIN, 12);
 
+            /**
+             *
+             * @param intensity creates text according to intensity
+             * @param x x position of label
+             * @param y y position of label
+             */
             public ColorDescriptionLabel(int intensity, int x, int y) {
                 String intensityString = "Intensity ";
                 switch (intensity) {
