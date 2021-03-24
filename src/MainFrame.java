@@ -26,7 +26,7 @@ public class MainFrame extends JFrame {
             xmlFetcher = new XMLFetcher(new OpenDataConfiguration());
         }
         if (odr == null) {
-            odr = new OpenDataReader(new File(xmlFetcher.getLocalDownloadPath() + "\\" + xmlFetcher.getOpenDataName()));
+            odr = new OpenDataReader(new File(xmlFetcher.getLocalDownloadPath() + File.separator + xmlFetcher.getOpenDataName()));
         }
 
         downloadData();

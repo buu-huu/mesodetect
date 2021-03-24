@@ -22,7 +22,7 @@ public class MapPanel extends JPanel {
         this.parentFrame = parentFrame;
 
         setLayout(null);
-        backgroundMap = ImageIO.read(new File(System.getProperty("user.dir") + File.separator + "res\\map_germany.png"));
+        backgroundMap = ImageIO.read(new File(System.getProperty("user.dir") + File.separator + "res" + File.separator + "map_germany.png"));
 
         setBackground(bg);
     }

@@ -94,8 +94,20 @@ public class DescriptionFrame extends JFrame {
         JLabel lblCurrent, lblHistoric, lblCurrentDesc, lblHistoricDesc;
         ColorLabel lbl1color, lbl2color, lbl3color, lbl4color, lbl5color;
         ColorDescriptionLabel lbl1desc, lbl2desc, lbl3desc, lbl4desc, lbl5desc;
-        Image mesoCurrentImage = ImageIO.read(new File(System.getProperty("user.dir") + File.separator + "\\res\\meso_icons\\meso_3.png"));
-        Image mesoHistoricImage = ImageIO.read(new File(System.getProperty("user.dir") + File.separator + "\\res\\meso_icons\\meso_3_hist.png"));
+        Image mesoCurrentImage = ImageIO.read(new File(System.getProperty("user.dir")
+                + File.separator
+                + "res"
+                + File.separator
+                + "meso_icons"
+                + File.separator
+                + "meso_3.png"));
+        Image mesoHistoricImage = ImageIO.read(new File(System.getProperty("user.dir")
+                + File.separator
+                + "res"
+                + File.separator
+                + "meso_icons"
+                + File.separator
+                + "meso_3_hist.png"));
 
         public DescriptionFramePanel() throws IOException {
             this.setLayout(null);
