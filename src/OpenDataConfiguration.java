@@ -1,6 +1,6 @@
 public class OpenDataConfiguration {
     private final String DEFAULT_OPEN_DATA_URL = "https://opendata.dwd.de/weather/radar/mesocyclones/";
-    private final String DEFAULT_OPEN_DATA_NAME = "meso_20200702_1715.xml";
+    private final String DEFAULT_OPEN_DATA_NAME = "meso_20200702_0120.xml";
     private String openDataURL;
     private String openDataName;
 

@@ -81,7 +81,7 @@ public class MainFrame extends JFrame {
         addMouseListener(frameDragListener);
         addMouseMotionListener(frameDragListener);
 
-        setTitle("Mesodetect  |  v1.0  |  \u00a9 Luca Schwarz");
+        setTitle("Mesodetect  |  v1.0 Beta");
         setSize(WIDTH, HEIGHT);
         setLocationRelativeTo(null);
         setResizable(false);
