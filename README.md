@@ -1,9 +1,9 @@
-# mesodetect
+# Mesodetect
 
 ## Moved to new Repository
-This project moved to the following repository:
+This project moved:
 
-[Mecy-Information](https://github.com/buu-huu/mecy-information)
+:point_right: [Mecy](https://github.com/buu-huu/mecy)
 
 Mesodetect is a software that shows mesocyclones, located and detected by the weather radars from the german weather authority.
 
